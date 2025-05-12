@@ -1,0 +1,75 @@
+{
+  "name": "gewechaty",
+  "version": "0.0.33",
+  "main": "dist/index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "node ./test.js",
+    "test2": "node_modules/.bin/ts-node -r tsconfig-paths/register src/test.js",
+    "dev": "npm run build && npm run test",
+    "build": "webpack --config ./webpack.config.js",
+    "check-types": "tsc index.d.ts --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "author": "MIKO",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@koa/bodyparser": "^5.1.1",
+    "axios": "^1.7.7",
+    "better-sqlite3": "^11.3.0",
+    "ds": "^2.0.2",
+    "fast-xml-parser": "^4.5.0",
+    "he": "^1.2.0",
+    "json-bigint": "^1.0.0",
+    "koa": "^2.15.3",
+    "koa-router": "^13.0.1",
+    "koa-static": "^5.0.0",
+    "qrcode-terminal": "^0.12.0"
+  },
+  "volta": {
+    "node": "20.17.0"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.10.7",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/bun": "^1.2.3",
+    "@types/koa": "^2.15.0",
+    "@types/koa-router": "^7.4.8",
+    "@types/koa-static": "^4.0.4",
+    "glob": "^11.0.0",
+    "swc-loader": "^0.2.6",
+    "typescript": "^5.4.2",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^5.1.4",
+    "@types/node": "^20.11.24",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "files": [
+    "dist/",
+    "src/**/*.d.ts",
+    "index.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mikoshu/gewechaty.git"
+  },
+  "keywords": [
+    "wechaty",
+    "wechatBot",
+    "wechat",
+    "gewechat"
+  ],
+  "bugs": {
+    "url": "https://github.com/mikoshu/gewechaty/issues"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "private": false,
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
