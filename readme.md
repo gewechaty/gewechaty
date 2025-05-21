@@ -36,7 +36,7 @@ npm install --save gewechaty-gewe
 // 完整示例
 const {
   GeweBot
-} = require("gewechaty");
+} = require("gewechaty-gewe");
 
 const bot = new GeweBot({
   debug: true, // 是否开启调试模式 默认false
@@ -215,7 +215,7 @@ bot
 
 ES6 import 方式引用
 ```javascript
-import pkg from 'gewechaty'
+import pkg from 'gewechaty-gewe'
 const {GeweBot, Filebox, UrlLink, WeVideo, Voice, MiniApp, AppMsg, Message} = pkg
 const bot = new GeweBot({
   debug: true, // 是否开启调试模式 默认false
@@ -247,7 +247,7 @@ const {
   Voice,
   MiniApp,
   AppMsg
-} = require("gewechaty");
+} = require("gewechaty-gewe");
 
 
 // 监听消息事件
