@@ -245,7 +245,7 @@ export const startServe = async (option) => {
 
       // 为 Docker 设置回调地址
       const res = await setUrl(callBackUrl)
-      console.log(JSON.stringify(res))
+      // console.log(JSON.stringify(res))
       if (res.ret === 200) {
         console.log(`设置回调地址为：${callBackUrl}`)
         console.log('服务启动成功')
