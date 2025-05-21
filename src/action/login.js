@@ -1,32 +1,34 @@
 import qrTerminal from 'qrcode-terminal'
-import { GetToken, GetQrcode, CheckLogin, Logout, Reconnection } from "@/api/login.js";
+import { GetQrcode, CheckLogin, Logout, Reconnection } from "@/api/login.js";
 import { setToken, setAppId, getAppId, setUuid, getUuid } from '@/utils/auth.js';
 import { botEmitter } from '@/bot.js'
 
 let loginStatus = 0
 // const appId = getAppId()
 // 获取token
-export const getToken = async (saveToStorage = true) => {
-  const res = await GetToken()
-  if (res.ret === 200) {
-    // 如果不保存到本地存储，则直接返回数据
-    if (!saveToStorage) {
-      return res.data
-    }
-    // 保存到本地存储，并返回数据
-    setToken(res.data)
-    return res.data
-  }
-  // 返回码不为200，抛出错误
-  throw res
-}
+// export const getToken = async (saveToStorage = true) => {
+//   const res = await GetToken()
+//   if (res.ret === 200) {
+//     // 如果不保存到本地存储，则直接返回数据
+//     if (!saveToStorage) {
+//       return res.data
+//     }
+//     // 保存到本地存储，并返回数据
+//     setToken(res.data)
+//     return res.data
+//   }
+//   // 返回码不为200，抛出错误
+//   throw res
+// }
 
 // 展示二维码
-const showQrcode = async() => {
-  await getToken()
+const showQrcode = async(obj) => {
+  // await getToken()
   try{
     const res = await GetQrcode({
-      appId: getAppId()
+      appId: getAppId(),
+      regionId: obj.regionId,
+      proxyIp: obj.proxyIp,
     })
     console.log('获取二维码返回值：', res)
     if(res.ret !== 200){
@@ -78,9 +80,10 @@ async function waitForCondition() {
   }
 }
 
-export const login = async (callbackUrl) => {
+export const login = async (obj) => {
   try{
-    const res = await showQrcode()
+    console.log(obj)
+    const res = await showQrcode(obj)
     console.log('showQrcode:', res)
     if(res){
       console.log('请扫码登录...');

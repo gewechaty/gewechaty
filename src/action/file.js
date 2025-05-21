@@ -10,8 +10,8 @@ export const toFileBox = async (xml, type = 2) => {
       xml,
       type
     })
-    const url = joinURL(FileBaseUrl, fileUrl)
-    return url
+    // const url = joinURL(FileBaseUrl, fileUrl)
+    return fileUrl
   }catch(e){
     console.error(e)
   }

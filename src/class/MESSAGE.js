@@ -162,7 +162,7 @@ export class Message {
 
     try {
       const url = await toFileBox(xml, type);
-      return Filebox.toDownload(url)
+      return Filebox.toDownload(url, 'image')
     } catch (e) {
       console.error(e)
       return null

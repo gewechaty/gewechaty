@@ -50,6 +50,7 @@ function isArrayOfString(arr) {
 
 // 发送消息 支持文本 图片 文件 语音 视频 小程序 app 等
 export const say = async (content, toWxid, ats) => {
+
   try{
     if(typeof content === 'string'){ // 处理文本消息
       let atString = ''
@@ -306,15 +307,4 @@ export const getWxId = (content) => {
     throw new Error('获取wxid必须传入string或者contact对象')
   }
 }
-
-
-// 下载文件
-
-// export const downloadFile = async (url) => {
-//   return await axios({
-//     url,
-//     method: 'get',
-//     responseType: 'arraybuffer'
-//   })
-// }
 
