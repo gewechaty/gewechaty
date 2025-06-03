@@ -164,7 +164,7 @@ export const startServe = async (option) => {
       // 先从 DS 和 Docker 获取 token / appid
       const oldAppId = ds.getAppId()
       const oldToken = ds.getToken()
-      const currentToken = await getTokenFromDocker()
+      const currentToken = option.token //await getTokenFromDocker()
 
       if (oldToken !== currentToken) { // token 变化，意味着 Docker 状态被重置
         console.log('Docker 状态被重置，程序将迁移数据，需要重新登录...')
