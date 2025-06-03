@@ -1,13 +1,5 @@
 import {post} from '@/request/request.js'
 
-
-export const GetToken = (data, config = {}) => {
-  Object.assign(config, {
-    allCode: true
-  })
-  return post('/tools/getTokenId', data, config)
-}
-
 export const GetQrcode = (data, config = {}) => {
   Object.assign(config, {
     allCode: true
@@ -26,7 +18,7 @@ export const SetCallBackUrl = (data, config = {}) => {
   Object.assign(config, {
     allCode: true
   })
-  return post('/tools/setCallback', data, config)
+  return post('/login/setCallback', data, config)
 }
 
 export const CheckOnline = (data, config = {}) => {

@@ -53,7 +53,7 @@ export const timeWithin = (timestamp, time = 2) => {
  * @returns
  */
 export const  getFileNameFromUrl = (link) => {
-    return link.split('/').pop();
+    return link.split('/').pop().split('?')[0];
 }
 
 export const joinURL = (...parts) => {

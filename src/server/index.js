@@ -6,7 +6,7 @@ import serve from 'koa-static'
 import * as fsPromise from 'node:fs/promises'
 import { join } from 'path';
 import {setUrl} from '@/action/setUrl.js'
-import {login, reconnection, getToken as getTokenFromDocker} from '@/action/login.js'
+import {login, reconnection} from '@/action/login.js'
 import {cacheAllContact} from '@/action/contact'
 import {setCached} from '@/action/common'
 import {CheckOnline} from '@/api/login'
@@ -164,17 +164,8 @@ export const startServe = async (option) => {
       // 先从 DS 和 Docker 获取 token / appid
       const oldAppId = ds.getAppId()
       const oldToken = ds.getToken()
-      const currentToken = option.token //await getTokenFromDocker()
 
-      if (oldToken !== currentToken) { // token 变化，意味着 Docker 状态被重置
-        console.log('Docker 状态被重置，程序将迁移数据，需要重新登录...')
-
-        // 储存新的 token
-        ds.setToken(currentToken)
-
-        // 状态被重置后，appid 失效，所以在 DS 中清空
-        ds.setAppId('')
-      } else if (oldAppId) { // 若已经设置 appid，通过 CheckOnline 接口验证当前登录状态
+      if (oldAppId) { // 若已经设置 appid，通过 CheckOnline 接口验证当前登录状态
         onlineStatus = await CheckOnline({
           appId: ds.getAppId()
         })
@@ -184,7 +175,11 @@ export const startServe = async (option) => {
 
       // 若无法获取到登录状态，则进入登录流程
       if(onlineStatus.ret === 200 && onlineStatus.data === false){
-        await login().then((res) => {
+        await login({
+          regionId: option.region_id,
+          token: option.token,
+          proxy_ip: option.proxy_ip,
+        }).then((res) => {
           if (!res) { // TODO: 登录逻辑应该把错误原因抛出，而不是返回 false
             throw new Error('登录遇到问题')
           }
@@ -210,7 +205,7 @@ export const startServe = async (option) => {
         // login() ->
         // showQrcode() [to get appid via `(await GetQrcode()).data.appId`] ->
         // setAppId()
-        if (oldToken !== currentToken && db.exists(join(option.data_dir, oldAppId + '.db'))) { // token 变化，且旧数据库文件存在
+        if (oldToken !== option.token && db.exists(join(option.data_dir, oldAppId + '.db'))) { // token 变化，且旧数据库文件存在
             // 用拷贝-删除替代重命名，以避免旧的数据库文件被占用导致无法重命名
             await fsPromise.copyFile(join(option.data_dir, oldAppId + '.db'), dbPath)
             // 删除失败只会在控制台输出错误，不会影响程序运行
@@ -250,6 +245,7 @@ export const startServe = async (option) => {
 
       // 为 Docker 设置回调地址
       const res = await setUrl(callBackUrl)
+      // console.log(JSON.stringify(res))
       if (res.ret === 200) {
         console.log(`设置回调地址为：${callBackUrl}`)
         console.log('服务启动成功')

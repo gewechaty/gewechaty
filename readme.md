@@ -1,24 +1,17 @@
-# gewechaty
+# gewechaty-gewe
 
 > 基于Gewechat的微信机器人插件
 
 ## 一、简介
 
-gewechaty 是基于[Gewechat](https://github.com/Devo919/Gewechat?tab=readme-ov-file)项目的二次封装，提供了更方便的使用方式。参考 wechaty 的 api 实现，以满足更快速开发的需求（由于gewechat接口限制无法完全平滑迁移只是提供更便捷的使用方法，如有些同步的方法需要改为异步）。
+gewechaty-gewe 是基于 GeWe 项目的二次封装，提供了更方便的使用方式。参考 wechaty 的 api 实现，以满足更快速开发的需求（由于gewechat-gewe接口限制无法完全平滑迁移只是提供更便捷的使用方法，如有些同步的方法需要改为异步）。
 
-本项目基于 [Gewechat](https://github.com/Devo919/Gewechat?tab=readme-ov-file)，请先确认 Gewechat 已经能够正常启动，否则无法使用本插件。
+本项目基于 GeWe ，请先确认 GeWe 已经能够正常启动，否则无法使用本插件。
+
+#### 注意： 需要先在 GeWe 后台生成 token 之后再使用，另外确保代理地址可用以及能让GeWe后台访问到。
 
 - 项目不断完善中，请务必使用最新版本。
-- 将在项目运行根目录创建一个ds.json 用于存储 appid token 和uuid 同时创建 ${appid}.db 用于缓存联系人和群信息，以确保可以使用联系人昵称和群名称查询相关信息，无需直接使用wxid查询， 如果确实需要使用wxid查询可以直接传入wxid，如`bot.Contact.find({id: 'wxid_xxxx'})`。
-- 注意如果本地没有ds.json文件将会以空的appid向gewechat发起新的登录请求，如果你已经登录了gewechat不想退出登录可以自行构建一个ds.json文件。结构如下：(如未保存这些信息，建议直接手机退出登录后直接运行项目，将会唤起重新登录流程)
-
-```json
-{
-    "token": "f4e4dd8d4ff148*************",
-    "appid": "wx_*****************",
-    "uuid": "************" 
-}
-```
+- 将在项目运行根目录创建一个ds.json 用于存储 appid token 和uuid 同时创建 ${appid}.db 用于缓存联系人和群信息，以确保可以使用联系人昵称和群名称
 
 - 由于使用了`better-sqlite3`作为数据缓存，内置的二进制文件对node版本有兼容依赖，建议使用node版本为20.17.0，可以使用[volta](https://volta.sh/)来管理node版本。
 - 首次使用时需要缓存所有联系人和保存的群数据，如果联系人较多，可能会比较耗时，之后将会自动维护db缓存数据无需再次处理。
@@ -30,7 +23,7 @@ gewechaty 是基于[Gewechat](https://github.com/Devo919/Gewechat?tab=readme-ov-
 使用以下命令安装本插件：
 
 ```bash
-npm install --save gewechaty
+npm install --save gewechaty-gewe
 ```
 
 ## 三、使用方法
@@ -43,12 +36,19 @@ npm install --save gewechaty
 // 完整示例
 const {
   GeweBot
-} = require("gewechaty");
+} = require("gewechaty-gewe");
 
 const bot = new GeweBot({
   debug: true, // 是否开启调试模式 默认false
-  base_api: process.env.WEGE_BASE_API_URL, // Gewechat启动后的基础api地址base_api 默认为 `http://本机ip:2531/v2/api`
-  file_api: process.env.WEGE_FILE_API_URL, // Gewechat启动后的文件api地址base_api 默认为 `http://本机ip:2532/download`,
+  port: 3000, // 本地服务端口 默认3000
+  proxy: 'http://my.proxy.com:3000', // 本地代理地址填写本机对应端口的外网地址，确保 gewe 能访问到
+  region_id: 110000, // 微信登陆地区ID
+  proxy_ip: 'socks5://username:password@123.2.2.2:8932', //代理IP 需要本省有代理服务器
+  token: '22c0xxxxxxx942fb4',  // gewe 后台生成的token
+  static: 'static', // 本机静态托管的目录 用于文件下载和上传 默认为static
+  route: '/wechat/callback', // 本地回调接口route 默认为 `/getWechatCallBack` 最终地址为 `http://proxy/getWechatCallBack`
+  data_dir: './', // 数据存储路径 默认为工作目录下的data文件夹
+  dbFileName: 'botCache' // 可选, 自定义sqlite数据库文件名，默认文件名: ${appid}.db
 });
 
 // 监听消息事件
@@ -215,12 +215,20 @@ bot
 
 ES6 import 方式引用
 ```javascript
-import pkg from 'gewechaty'
+import pkg from 'gewechaty-gewe'
 const {GeweBot, Filebox, UrlLink, WeVideo, Voice, MiniApp, AppMsg, Message} = pkg
 const bot = new GeweBot({
   debug: true, // 是否开启调试模式 默认false
-  base_api: process.env.WEGE_BASE_API_URL,
-  file_api: process.env.WEGE_FILE_API_URL,
+  port: 3000, // 本地服务端口 默认3000
+  proxy: 'http://my.proxy.com:3000', // 本地代理地址填写本机对应端口的外网地址，确保 gewe 能访问到
+  region_id: 110000, // 微信登陆地区ID
+  proxy_ip: 'socks5://username:password@123.2.2.2:8932', //代理IP 需要本省有代理服务器
+  token: '22c0xxxxxxx942fb4',  // gewe 后台生成的token
+  static: 'static', // 本机静态托管的目录 用于文件下载和上传 默认为static
+  route: '/wechat/callback', // 本地回调接口route 默认为 `/getWechatCallBack` 最终地址为 `http://proxy/getWechatCallBack`
+  data_dir: './', // 数据存储路径 默认为工作目录下的data文件夹
+  dbFileName: 'botCache' // 可选, 自定义sqlite数据库文件名，默认文件名: ${appid}.db
+  
 });
 ```
 
@@ -239,7 +247,7 @@ const {
   Voice,
   MiniApp,
   AppMsg
-} = require("gewechaty");
+} = require("gewechaty-gewe");
 
 
 // 监听消息事件
@@ -348,17 +356,18 @@ bot.start()
 
 ```javascript
 const bot = new GeweBot({
-  debug: true, // 是否开启调试模式 默认false 开启调试将在控制台输出回调接口接收到的内容
+  debug: true, // 是否开启调试模式 默认false
   port: 3000, // 本地服务端口 默认3000
-  proxy: process.env.WEGE_LOCAL_PROXY, // 本地代理地址，用于gewechat的docker在云时无法访问本地时使用 可为空 如果有则使用代理 否则使用本机ip地址例如 （http://proxy.domain.com:3000）注意需要跟上端口号
-  static: "static", // 本机静态托管的目录 用于文件下载和上传 默认为static
-  route: "/getWechatCallBack", // 本地回调接口route 默认为 `/getWechatCallBack` 最终地址为 `http://本机ip:port/getWechatCallBack`
-  base_api: process.env.WEGE_BASE_API_URL, // 基础api地址base_api 默认为 `http://本机ip:2531/v2/api`
-  file_api: process.env.WEGE_FILE_API_URL, // 文件api地址base_api 默认为 `http://本机ip:2532/download`,
-  data_dir: './data', // 数据存储路径 默认为工作目录下的data文件夹
+  proxy: 'http://my.proxy.com:3000', // 本地代理地址填写本机对应端口的外网地址，确保 gewe 能访问到
+  region_id: 110000, // 微信登陆地区ID
+  proxy_ip: 'socks5://username:password@123.2.2.2:8932', //代理IP 需要本省有代理服务器
+  token: '22c0xxxxxxx942fb4',  // gewe 后台生成的token
+  static: 'static', // 本机静态托管的目录 用于文件下载和上传 默认为static
+  route: '/wechat/callback', // 本地回调接口route 默认为 `/getWechatCallBack` 最终地址为 `http://proxy/getWechatCallBack`
+  data_dir: './', // 数据存储路径 默认为工作目录下的data文件夹
   dbFileName: 'botCache' // 可选, 自定义sqlite数据库文件名，默认文件名: ${appid}.db
 });
-// 如果docker 和GeweBot在同一台电脑上 可以直接使用 new GeweBot() 即可
+
 ```
 
 ### GeweBot 类方法介绍

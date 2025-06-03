@@ -16,7 +16,7 @@ import { getLocalIPAddress } from "@/utils/index.js";
 import {logout, login} from '@/action/login.js'
 import { Friendship } from './class/FRIENDSHIP'
 import {getMyInfo, getMyQrcode, setMyInfo, setPrivacy, setAvatar, getDevices} from '@/action/personal.js'
-import {createDS, getAppId, getToken, getUuid} from '@/utils/auth.js'
+import {createDS, getAppId, getToken, setToken, getUuid} from '@/utils/auth.js'
 import {db} from '@/sql/index.js'
 import {cacheAllContact} from '@/action/contact.js'
 import { join } from 'node:path';
@@ -35,8 +35,10 @@ export class GeweBot {
     this.port = this.port || 3000;
     this.static = this.static ||'static';
     this.proxy = this.proxy || `http://${ip}:${this.port}`;
-    this.base_api = this.base_api || `http://${ip}:2531/v2/api`;
-    this.file_api = this.file_api || `http://${ip}:2532/download`;
+    this.base_api = this.base_api || 'http://218.78.116.24:10883/gewe/v2/api';
+    this.proxy_ip = this.proxy_ip || '';
+    this.token = this.token || '';
+    this.region_id = this.region_id || 110000
     this.route = this.route || '/getWechatCallBack'
     this.use_cache = true
     this.debug = this.debug || false
@@ -48,17 +50,20 @@ export class GeweBot {
     this.Message = Message
     this.db = db
     // 初始化事件监听器
-
+    if(!this.token){
+      throw new Error('token is required')
+    }
     // 初始化数据存储
     // Create data directory if it doesn't exist
     if (!existsSync(this.data_dir)) {
       mkdirSync(this.data_dir, { recursive: true })
     }
     createDS(this.data_dir)
+    setToken(this.token)
   }
   async start(){
     setBaseUrl(this.base_api)
-    setFileUrl(this.file_api)
+    // setFileUrl(this.file_api)
     // 启动服务
     return await startServe(this)
   }
@@ -67,7 +72,11 @@ export class GeweBot {
   }
   login(){ // return boolean
     // 登录
-    return login()
+    return login({
+      regionId: this.region_id,
+      token: this.token,
+      proxy_ip: this.proxy_ip,
+    })
   }
   logout(){ // return boolean
     // 退出登录
