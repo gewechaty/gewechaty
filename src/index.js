@@ -35,7 +35,7 @@ export class GeweBot {
     this.port = this.port || 3000;
     this.static = this.static ||'static';
     this.proxy = this.proxy || `http://${ip}:${this.port}`;
-    this.base_api = this.base_api || 'http://218.78.116.24:10883/gewe/v2/api';
+    this.base_api = this.base_api || 'http://api.geweapi.com/gewe/v2/api';
     this.proxy_ip = this.proxy_ip || '';
     this.token = this.token || '';
     this.region_id = this.region_id || 110000
