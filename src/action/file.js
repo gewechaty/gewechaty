@@ -1,6 +1,15 @@
 import {downloadFile} from '@/api/file'
 import {getAppId} from '@/utils/auth.js'
-import {Message} from '@/class/MESSAGE'
+import { XMLParser } from "fast-xml-parser";
+
+const getXmlToJson = (xml) => {
+  const parser = new XMLParser({
+    ignoreAttributes: false, // 不忽略属性
+    attributeNamePrefix: '', // 移除默认的属性前缀
+  });
+  let jObj = parser.parse(xml);
+  return jObj
+}
 
 export const toFileBox = async (xml, type = 2) => {
   try{
@@ -8,7 +17,7 @@ export const toFileBox = async (xml, type = 2) => {
       console.log('图片下载的 type 为 1-高清大图 2-常规图 3-缩略图')
       return null
     }
-    const obj = Message.getXmlToJson(xml)
+    const obj = getXmlToJson(xml)
     const big = obj.msg.img.cdnbigimgurl || ''
     const medium = obj.msg.img.cdnmidimgurl || ''
     // const small = obj.msg.img.cdnthumburl || ''
