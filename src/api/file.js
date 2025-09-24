@@ -1,7 +1,7 @@
 import { post } from '@/request/request'
 
 // 并发上限
-const MAX_CONCURRENCY = 2
+const MAX_CONCURRENCY = 1
 let active = 0
 const queue = []  // 存放待执行的任务（函数）
 
