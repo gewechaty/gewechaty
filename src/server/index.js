@@ -21,6 +21,7 @@ import {RoomInvitation} from '@/class/ROOMINVITATION.js'
 import {getRoomLiveInfo} from '@/action/room.js'
 import { Friendship } from '@/class/FRIENDSHIP';
 import * as ds from '@/utils/auth';
+import { type } from 'node:os';
 export const bot = botEmitter
 export let staticUrl = 'static'
 export let proxyUrl = ''
@@ -179,6 +180,7 @@ export const startServe = async (option) => {
           regionId: option.region_id,
           token: option.token,
           proxy_ip: option.proxy_ip,
+          type: option.type
         }).then((res) => {
           if (!res) { // TODO: 登录逻辑应该把错误原因抛出，而不是返回 false
             throw new Error('登录遇到问题')

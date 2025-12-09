@@ -29,6 +29,7 @@ const showQrcode = async(obj) => {
       appId: getAppId(),
       regionId: obj.regionId,
       proxyIp: obj.proxyIp,
+      type: obj.type || 'ipad'
     })
     console.log('获取二维码返回值：', res)
     if(res.ret !== 200){
