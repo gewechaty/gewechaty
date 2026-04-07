@@ -175,12 +175,15 @@ export class Message {
       return
     }
     const wxid = this.isRoom ? this.roomId : this.fromId
+    const contact = await this.from()
     let msg = {
       title,
       msgid: this._newMsgId,
-      wxid,
+      wxid: this.fromId,
+      room: wxid,
       type: this._type,
       content: this._text,
+      displayname: contact.name(),
     }
 
     return quote(msg, wxid)

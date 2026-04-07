@@ -220,12 +220,17 @@ export const quote = async (obj, toWxid) => {
     <refermsg>
       <type>${obj.type || 1}</type>
       <svrid>${obj.msgid}</svrid>
-      <fromusr>${obj.wxid}</fromusr>
+      <fromusr>${obj.room}</fromusr>
       <chatusr>${obj.wxid}</chatusr>
-      <displayname />
+      <displayname>${obj.displayname || ''}</displayname>
       <content>${escapeHtml(obj.content)}</content>
     </refermsg>
   </appmsg>`
+
+  // console.log(obj)
+
+  // console.log(msg)
+
   return SendAppMsg({
     appId: getAppId(),
     toWxid,
